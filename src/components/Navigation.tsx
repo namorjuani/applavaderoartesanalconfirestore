@@ -1,5 +1,3 @@
-// src/components/Navigation.tsx
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './Navigation.css'; // Archivo de estilos específicos para la navegación
@@ -19,6 +17,9 @@ const Navigation: React.FC = () => {
                             </li>
                             <li className="nav-item">
                                 <Link to="/washers" className="nav-link text-body-secondary">Lavadores</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/vehicle-summary" className="nav-link text-body-secondary">Resumen de Vehículos</Link>
                             </li>
                         </ul>
                     </div>

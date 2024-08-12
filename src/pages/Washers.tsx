@@ -1,6 +1,5 @@
-// src/pages/Washers.tsx
-import React from 'react';
-import WasherLog from '../components/WasherLog';
+import React from "react";
+import WasherLog from "../components/WasherLog";
 
 const Washers: React.FC = () => {
     return (

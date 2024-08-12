@@ -1,4 +1,3 @@
-// src/pages/VehicleRegistration.tsx
 import React from 'react';
 import VehicleForm from '../components/VehicleForm';
 import VehicleList from '../components/VehicleList';

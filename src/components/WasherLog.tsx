@@ -1,4 +1,3 @@
-// src/components/WasherLog.tsx
 import React, { useState, useEffect } from 'react';
 
 const WasherLog: React.FC = () => {
@@ -7,6 +6,9 @@ const WasherLog: React.FC = () => {
     const [washerLogs, setWasherLogs] = useState<any[]>([]);
 
     useEffect(() => {
+        const storedWashers = JSON.parse(localStorage.getItem('washers') || '["Ariana", "Alejandro", "Javier"]');
+        setWashers(storedWashers);
+
         const storedLogs = JSON.parse(localStorage.getItem('washerLogs') || '[]');
         setWasherLogs(storedLogs);
     }, []);
@@ -18,8 +20,10 @@ const WasherLog: React.FC = () => {
     const handleAddWasher = () => {
         const newWasher = prompt('Ingrese el nombre del nuevo lavador');
         if (newWasher) {
-            setWashers([...washers, newWasher]);
+            const newWashers = [...washers, newWasher];
+            setWashers(newWashers);
             setSelectedWasher(newWasher);
+            localStorage.setItem('washers', JSON.stringify(newWashers));
         }
     };
 
@@ -33,7 +37,7 @@ const WasherLog: React.FC = () => {
 
     return (
         <div className="WasherLog">
-            <h2>Log de Lavadores</h2>
+            <h2>Resumen de vehiculos y monto acumulado de los Lavadores</h2>
             <label>
                 Seleccione Lavador:
                 <select value={selectedWasher} onChange={handleWasherChange}>
