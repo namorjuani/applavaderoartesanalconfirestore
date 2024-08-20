@@ -5,7 +5,6 @@ import VehicleList from '../components/VehicleList';
 const VehicleRegistration: React.FC = () => {
     return (
         <div>
-            <h2>Registro de Vehículos Ingresados</h2>
             <VehicleForm />
             <VehicleList />
         </div>

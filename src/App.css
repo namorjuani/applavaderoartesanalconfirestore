@@ -21,6 +21,7 @@
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  margin-top: 180px;
 }
 
 .VehicleForm label {
@@ -44,4 +45,9 @@
   padding: 10px 20px;
   cursor: pointer;
   border-radius: 5px;
+}
+/* Contenedor principal para el contenido */
+.main-content {
+  margin-top: 80px; /* Espacio superior para el contenido, igual al alto del menú */
+  padding: 20px; /* Espacio interno para evitar superposición del contenido */
 }

@@ -14,12 +14,13 @@ const VehicleSummary: React.FC = () => {
             <ul>
                 {vehicles.map((vehicle, index) => (
                     <li key={index}>
-                        {vehicle.date} - {vehicle.companyName} - {vehicle.licensePlate} - {vehicle.vehicleType} - {vehicle.customerName} - {vehicle.washer}
+                        {vehicle.date} - {vehicle.companyName} - {vehicle.licensePlate} - {vehicle.vehicleType} - {vehicle.customerName} - Lavado por: {vehicle.washer || 'No asignado'}
                     </li>
                 ))}
             </ul>
         </div>
     );
 };
+
 
 export default VehicleSummary;

@@ -1,30 +1,65 @@
-/* src/components/Navigation.css */
-
+/* Estilo para el menú de navegación */
 .navbar {
-  margin-bottom: 20px; /* Espacio entre el menú y el contenido principal */
-}
-
-.navbar-toggler {
-  border: none; /* Eliminar el borde del botón del toggler */
-}
-
-.collapse {
-  position: absolute;
-  top: 56px; /* Ajustar según el tamaño del navbar */
+  position: fixed; /* Mantiene el menú fijo en la parte superior */
+  top: 0;
   left: 0;
-  z-index: 1000; /* Asegurarse que el menú colapsado esté por encima del contenido */
-  width: 100%; /* Ocupar todo el ancho */
-  background-color: #343a40; /* Color de fondo del menú colapsado */
+  width: 100%; /* Ocupa todo el ancho de la página */
+  z-index: 1000; /* Asegura que el menú esté por encima del contenido */
+  background-color: #343a40; /* Color de fondo del menú */
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  padding: 10px 0; /* Espacio interno para el menú */
+  transform: translateY(-80px); /* Oculta el menú más arriba */
+  transition: transform 0.3s ease; /* Transición suave para el efecto de expansión */
 }
 
+/* Mostrar el menú completamente al pasar el cursor */
+.navbar:hover {
+  transform: translateY(0); /* Mueve el menú a su posición original */
+}
+
+/* Estilo para el botón del menú colapsado */
+.navbar-toggler {
+  border: none; /* Elimina el borde del botón del menú colapsado */
+}
+
+/* Estilo para el menú colapsado */
+.collapse {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Estilo para los enlaces en el menú colapsado */
 .collapse .nav-link {
-  color: #adb5bd; /* Color de texto para los enlaces del menú colapsado */
+  color: #adb5bd; /* Color de texto para los enlaces */
   padding: 10px 20px; /* Espaciado interno de los enlaces */
-  text-decoration: none; /* Eliminar subrayado de los enlaces */
-  display: block; /* Convertir los enlaces en bloques para ocupar todo el ancho */
+  text-decoration: none; /* Elimina el subrayado de los enlaces */
+  display: block; /* Convertir los enlaces en bloques */
 }
 
+/* Estilo para los enlaces al pasar el ratón sobre ellos */
 .collapse .nav-link:hover {
-  color: #61dafb; /* Color de texto al pasar el ratón sobre los enlaces */
+  color: #61fb61; /* Color de texto al pasar el ratón sobre los enlaces */
+}
+
+/* Estilo para el contenedor del ícono de despliegue */
+.navbar::before {
+  content: "⮟"; /* Símbolo de flecha hacia abajo */
+  display: block;
+  position: absolute;
+  top: 10px; /* Ajusta la posición vertical */
+  right: 10px; /* Ajusta la posición horizontal */
+  color: #adb5bd; /* Color del ícono */
+  cursor: pointer; /* Cambia el cursor al pasar sobre el ícono */
+  transition: color 0.3s ease; /* Transición suave para el color del ícono */
+}
+
+/* Cambia el color del ícono al pasar el cursor sobre el menú */
+.navbar:hover::before {
+  color: #61fb61; /* Color del ícono al pasar el cursor */
+}
+
+/* Contenedor principal para el contenido */
+.main-content {
+  margin-top: 80px; /* Espacio superior para el contenido, igual al alto del menú */
+  padding: 20px; /* Espacio interno para evitar superposición del contenido */
 }
