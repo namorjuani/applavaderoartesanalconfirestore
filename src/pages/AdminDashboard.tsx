@@ -83,6 +83,18 @@ const AdminDashboard: React.FC = () => {
         }
     };
 
+    const handlePaymentReceived = (washer: string) => {
+        const confirm = window.confirm(`¿Confirmar que el pago de ${washer} ha sido recibido y los registros deben ser reiniciados?`);
+        if (confirm) {
+            const updatedVehicles = vehicles.map(vehicle =>
+                vehicle.washer === washer ? { ...vehicle, amount: 0 } : vehicle
+            );
+            setVehicles(updatedVehicles);
+            localStorage.setItem('vehicles', JSON.stringify(updatedVehicles));
+            Swal.fire('Éxito', `Registros de ${washer} reiniciados`, 'success');
+        }
+    };
+
     return (
         <div>
             <h2>Panel de Administración</h2>
@@ -101,6 +113,7 @@ const AdminDashboard: React.FC = () => {
                     <li key={index}>
                         {washer}
                         <button onClick={() => handleClearWasher(washer)}>Limpiar</button>
+                        <button style={{ backgroundColor: 'green', color: 'white' }} onClick={() => handlePaymentReceived(washer)}>Pago Entregado</button>
                     </li>
                 ))}
             </ul>
