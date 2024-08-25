@@ -49,7 +49,7 @@
 
 /* Cambia el color del ícono al pasar el cursor sobre el menú */
 .navbar:hover::before {
-  color: #61fb61; /* Color del ícono al pasar el cursor */
+  color: #5af85a; /* Color del ícono al pasar el cursor */
 }
 
 /* Contenedor principal para el contenido */

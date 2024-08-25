@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 
-
 interface Vehicle {
     customerType: string;
     companyName: string;
@@ -17,7 +16,7 @@ interface Vehicle {
 const Washers: React.FC = () => {
     const [washers, setWashers] = useState<string[]>([]);
     const [newWasher, setNewWasher] = useState('');
-    const [selectedWasherToRemove, setSelectedWasherToRemove] = useState('');
+    const [selectedWasherToRemove, setSelectedWasherToRemove] = useState<string>('');
     const [selectedWasherSummary, setSelectedWasherSummary] = useState<string>('');
     const [vehicleSummary, setVehicleSummary] = useState<Vehicle[]>([]);
     const [totalAmount, setTotalAmount] = useState<number>(0);
@@ -63,7 +62,7 @@ const Washers: React.FC = () => {
                 localStorage.setItem('washers', JSON.stringify(updatedWashers));
 
                 const vehicles = JSON.parse(localStorage.getItem('vehicles') || '[]');
-                const updatedVehicles = vehicles.filter(vehicle => vehicle.washer !== selectedWasherToRemove);
+                const updatedVehicles = vehicles.filter((vehicle: Vehicle) => vehicle.washer !== selectedWasherToRemove);
                 localStorage.setItem('vehicles', JSON.stringify(updatedVehicles));
 
                 Swal.fire('Éxito', `Lavador ${selectedWasherToRemove} eliminado correctamente`, 'success');
@@ -77,10 +76,10 @@ const Washers: React.FC = () => {
     const handleSearchSummary = () => {
         if (selectedWasherSummary) {
             const vehicles = JSON.parse(localStorage.getItem('vehicles') || '[]');
-            const filteredVehicles = vehicles.filter(vehicle => vehicle.washer === selectedWasherSummary);
+            const filteredVehicles = vehicles.filter((vehicle: Vehicle) => vehicle.washer === selectedWasherSummary);
 
             // Calcula el total acumulado basado en los precios
-            const totalAmount = filteredVehicles.reduce((sum, vehicle) => {
+            const totalAmount = filteredVehicles.reduce((sum: number, vehicle: Vehicle) => {
                 const priceKey = `${vehicle.vehicleType.toLowerCase()}${vehicle.customerType.toLowerCase()}`;
                 const price = washerPrices[priceKey] || 0; // Obtener el precio correcto
                 return sum + price;
@@ -97,7 +96,6 @@ const Washers: React.FC = () => {
     return (
         <div>
             <h2>Gestión de Lavadores</h2>
-
 
             <div>
                 <h3>Buscar Resumen de Lavador</h3>
@@ -124,16 +122,15 @@ const Washers: React.FC = () => {
                         </ul>
                         <h5>Total de Vehículos Lavados:</h5>
                         <ul>
-                            {Object.entries(vehicleSummary.reduce((acc, vehicle) => {
+                            {Object.entries(vehicleSummary.reduce((acc: { [key: string]: number }, vehicle) => {
                                 const key = `${vehicle.vehicleType.toLowerCase()}${vehicle.customerType.toLowerCase()}`;
                                 if (!acc[key]) acc[key] = 0;
                                 acc[key] += 1;
                                 return acc;
-                            }, {} as { [key: string]: number })).map(([key, count]) => (
+                            }, {})).map(([key, count]) => (
                                 <li key={key}>{`${key.charAt(0).toUpperCase() + key.slice(1).replace(/([a-z])([A-Z])/g, '$1 $2')}: ${count}`}</li>
                             ))}
                         </ul>
-
                     </div>
                 )}
             </div>
