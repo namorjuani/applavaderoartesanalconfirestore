@@ -1,8 +1,7 @@
 /* Estilo para el menú de navegación */
 .navbar {
-  position: fixed; /* Mantiene el menú fijo en la parte superior */
+  position: absolute; /* Mantiene el menú fijo en la parte superior */
   top: 0;
-  left: 0;
   width: 100%; /* Ocupa todo el ancho de la página */
   z-index: 1000; /* Asegura que el menú esté por encima del contenido */
   background-color: #343a40; /* Color de fondo del menú */
@@ -10,11 +9,6 @@
   padding: 10px 0; /* Espacio interno para el menú */
   transform: translateY(-80px); /* Oculta el menú más arriba */
   transition: transform 0.3s ease; /* Transición suave para el efecto de expansión */
-}
-
-/* Mostrar el menú completamente al pasar el cursor */
-.navbar:hover {
-  transform: translateY(0); /* Mueve el menú a su posición original */
 }
 
 /* Estilo para el botón del menú colapsado */

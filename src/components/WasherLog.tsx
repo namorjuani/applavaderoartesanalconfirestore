@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 
+
 interface Vehicle {
     customerType: string;
     companyName: string;
@@ -20,10 +21,25 @@ const Washers: React.FC = () => {
     const [selectedWasherSummary, setSelectedWasherSummary] = useState<string>('');
     const [vehicleSummary, setVehicleSummary] = useState<Vehicle[]>([]);
     const [totalAmount, setTotalAmount] = useState<number>(0);
+    const [washerPrices, setWasherPrices] = useState<{ [key: string]: number }>({
+        autoRentacar: 500,
+        suvRentacar: 600,
+        fourByFourRentacar: 800,
+        combiRentacar: 1000,
+        autoParticular: 500,
+        suvParticular: 600,
+        fourByFourParticular: 800,
+        combiParticular: 1000,
+    });
 
     useEffect(() => {
         const storedWashers = JSON.parse(localStorage.getItem('washers') || '[]');
         setWashers(storedWashers);
+
+        const storedWasherPrices = JSON.parse(localStorage.getItem('washerPrices') || '{}');
+        if (Object.keys(storedWasherPrices).length > 0) {
+            setWasherPrices(storedWasherPrices);
+        }
     }, []);
 
     const handleAddWasher = () => {
@@ -42,18 +58,16 @@ const Washers: React.FC = () => {
         if (selectedWasherToRemove) {
             const confirm = window.confirm(`¿Estás seguro de que deseas eliminar el lavador ${selectedWasherToRemove}?`);
             if (confirm) {
-                // Eliminar el lavador de la lista de lavadores
                 const updatedWashers = washers.filter(washer => washer !== selectedWasherToRemove);
                 setWashers(updatedWashers);
                 localStorage.setItem('washers', JSON.stringify(updatedWashers));
 
-                // Eliminar todos los registros asociados a ese lavador
                 const vehicles = JSON.parse(localStorage.getItem('vehicles') || '[]');
                 const updatedVehicles = vehicles.filter(vehicle => vehicle.washer !== selectedWasherToRemove);
                 localStorage.setItem('vehicles', JSON.stringify(updatedVehicles));
 
                 Swal.fire('Éxito', `Lavador ${selectedWasherToRemove} eliminado correctamente`, 'success');
-                setSelectedWasherToRemove(''); // Resetear selección
+                setSelectedWasherToRemove('');
             }
         } else {
             Swal.fire('Error', 'Selecciona un lavador para eliminar', 'error');
@@ -65,9 +79,14 @@ const Washers: React.FC = () => {
             const vehicles = JSON.parse(localStorage.getItem('vehicles') || '[]');
             const filteredVehicles = vehicles.filter(vehicle => vehicle.washer === selectedWasherSummary);
 
-            // Calcular el total asegurando que amount es un número
-            const totalAmount = filteredVehicles.reduce((sum, vehicle) => sum + (vehicle.amount || 0), 0);
+            // Calcula el total acumulado basado en los precios
+            const totalAmount = filteredVehicles.reduce((sum, vehicle) => {
+                const priceKey = `${vehicle.vehicleType.toLowerCase()}${vehicle.customerType.toLowerCase()}`;
+                const price = washerPrices[priceKey] || 0; // Obtener el precio correcto
+                return sum + price;
+            }, 0);
 
+            // Actualiza el estado
             setVehicleSummary(filteredVehicles);
             setTotalAmount(totalAmount);
         } else {
@@ -79,30 +98,6 @@ const Washers: React.FC = () => {
         <div>
             <h2>Gestión de Lavadores</h2>
 
-            <div>
-                <h3>Agregar Lavador</h3>
-                <input
-                    type="text"
-                    value={newWasher}
-                    onChange={(e) => setNewWasher(e.target.value)}
-                    placeholder="Nombre del lavador"
-                />
-                <button onClick={handleAddWasher}>Agregar Lavador</button>
-            </div>
-
-            <div>
-                <h3>Eliminar Lavador</h3>
-                <select
-                    value={selectedWasherToRemove}
-                    onChange={(e) => setSelectedWasherToRemove(e.target.value)}
-                >
-                    <option value="">Seleccione un lavador para eliminar</option>
-                    {washers.map((washer, index) => (
-                        <option key={index} value={washer}>{washer}</option>
-                    ))}
-                </select>
-                <button onClick={handleRemoveWasher}>Quitar Lavador Existente</button>
-            </div>
 
             <div>
                 <h3>Buscar Resumen de Lavador</h3>
@@ -123,11 +118,22 @@ const Washers: React.FC = () => {
                         <ul>
                             {vehicleSummary.map((vehicle, index) => (
                                 <li key={index}>
-                                    {vehicle.licensePlate} - {vehicle.vehicleType} - ${vehicle.amount?.toFixed(2) || '0.00'}
+                                    {vehicle.date} - {vehicle.licensePlate} - {vehicle.vehicleType} - {vehicle.companyName}
                                 </li>
                             ))}
                         </ul>
-                        <h5>Total Acumulado: ${totalAmount.toFixed(2)}</h5>
+                        <h5>Total de Vehículos Lavados:</h5>
+                        <ul>
+                            {Object.entries(vehicleSummary.reduce((acc, vehicle) => {
+                                const key = `${vehicle.vehicleType.toLowerCase()}${vehicle.customerType.toLowerCase()}`;
+                                if (!acc[key]) acc[key] = 0;
+                                acc[key] += 1;
+                                return acc;
+                            }, {} as { [key: string]: number })).map(([key, count]) => (
+                                <li key={key}>{`${key.charAt(0).toUpperCase() + key.slice(1).replace(/([a-z])([A-Z])/g, '$1 $2')}: ${count}`}</li>
+                            ))}
+                        </ul>
+
                     </div>
                 )}
             </div>

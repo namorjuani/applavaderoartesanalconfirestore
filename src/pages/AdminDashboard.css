@@ -1,0 +1,71 @@
+/* Archivo AdminDashboard.css */
+
+.button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 16px;
+  margin: 5px;
+  transition: background-color 0.3s;
+}
+
+.button.clear {
+  background-color: red;
+}
+
+.button.clear:hover {
+  background-color: darkred;
+}
+
+.button.payment {
+  background-color: green;
+}
+
+.button.payment:hover {
+  background-color: darkgreen;
+}
+
+.add {
+  background-color: #28a745;
+}
+
+.remove {
+  background-color: #dc3545;
+}
+
+.add:hover {
+  background-color: #218838;
+}
+
+.remove:hover {
+  background-color: #c82333;
+}
+
+.button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 16px;
+  margin: 5px;
+  transition: background-color 0.3s;
+}
+
+.button.clear {
+  background-color: red;
+}
+
+.button.clear:hover {
+  background-color: darkred;
+}
+
+.button.payment {
+  background-color: green;
+}
+
+.button.payment:hover {
+  background-color: darkgreen;
+}

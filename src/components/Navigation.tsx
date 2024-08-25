@@ -12,22 +12,22 @@ const Navigation: React.FC = () => {
                 <div className="collapse" id="navbarToggleExternalContent">
                     <div className="bg-dark">
                         <ul className="nav flex-row">
-                            <li className="nav-item">
+                            <ul className="nav-item">
                                 <Link to="/" className="nav-link text-body-secondary">Registro de Vehículos Ingresados</Link>
-                            </li>
-                            <li className="nav-item">
+                            </ul>
+                            <ul className="nav-item">
                                 <Link to="/washers" className="nav-link text-body-secondary">Lavadores</Link>
-                            </li>
-                            <li className="nav-item">
+                            </ul>
+                            <ul className="nav-item">
                                 <Link to="/vehicle-summary" className="nav-link text-body-secondary">Resumen de Vehículos</Link>
-                            </li>
-                            <li className="nav-item">
+                            </ul>
+                            <ul className="nav-item">
                                 <Link to="/company-records" className="nav-link text-body-secondary">Registro por Empresa</Link>
-                            </li>
+                            </ul>
                             {/* Nuevo elemento para iniciar sesión como administrador */}
-                            <li className="nav-item">
+                            <ul className="nav-item">
                                 <Link to="/admin-login" className="nav-link text-body-secondary">Iniciar sesión como administrador</Link>
-                            </li>
+                            </ul>
                         </ul>
                     </div>
                 </div>

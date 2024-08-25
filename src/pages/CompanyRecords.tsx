@@ -5,10 +5,26 @@ const CompanyRecords: React.FC = () => {
     const [selectedCompany, setSelectedCompany] = useState<string>('');
     const [companyVehicles, setCompanyVehicles] = useState<any[]>([]);
     const [contactNumber, setContactNumber] = useState<string>('');
+    const [prices, setPrices] = useState<{ [key: string]: number }>({
+        autoRentacar: 5500,
+        suvRentacar: 6500,
+        fourByFourRentacar: 8500,
+        combiRentacar: 10000,
+        autoParticular: 5500,
+        suvParticular: 6500,
+        fourByFourParticular: 8500,
+        combiParticular: 10000,
+    });
 
     useEffect(() => {
         const storedVehicles = JSON.parse(localStorage.getItem('vehicles') || '[]');
         setVehicles(storedVehicles);
+
+        // Obtener precios actualizados del localStorage
+        const storedPrices = JSON.parse(localStorage.getItem('washPrices') || '{}');
+        if (Object.keys(storedPrices).length > 0) {
+            setPrices(storedPrices);
+        }
     }, []);
 
     useEffect(() => {
@@ -31,18 +47,13 @@ const CompanyRecords: React.FC = () => {
     };
 
     const getVehicleCost = (vehicleType: string) => {
-        switch (vehicleType) {
-            case 'auto':
-                return 5500;
-            case 'suv':
-                return 6500;
-            case '4x4':
-                return 8500;
-            case 'combi':
-                return 10000;
-            default:
-                return 0;
+        // Determinar el precio según el tipo de vehículo y empresa
+        const vehicleKey = `${vehicleType}Rentacar`; // Default
+        if (prices[vehicleKey]) {
+            return prices[vehicleKey];
         }
+
+        return prices[`${vehicleType}Particular`] || 0; // Fallback
     };
 
     const generateWhatsAppMessage = () => {

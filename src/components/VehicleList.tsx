@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './VehicleList.css'; // Asegúrate de que este archivo existe y se usa en tu proyecto
 
 const getTodayDate = () => {
     const today = new Date();
@@ -20,6 +21,20 @@ const VehicleList: React.FC = () => {
 
         filterVehicles(storedVehicles);
     }, [filters]);
+
+    useEffect(() => {
+        const handleStorageChange = () => {
+            const updatedVehicles = JSON.parse(localStorage.getItem('vehicles') || '[]');
+            setVehicles(updatedVehicles);
+            filterVehicles(updatedVehicles);
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, []);
 
     const handleAssignWasher = (vehicleIndex: number, washerName: string) => {
         const newVehicles = [...vehicles];
@@ -66,57 +81,49 @@ const VehicleList: React.FC = () => {
 
     return (
         <div className="VehicleList">
-            <h2>Listado de Vehículos Ingresados</h2>
-            <label>
-                Filtrar por fecha:
-                <input type="date" name="date" onChange={handleFilterChange} />
-            </label>
             <br />
-            <label>
-                Filtrar por patente:
-                <input type="text" name="licensePlate" onChange={handleFilterChange} />
-            </label>
             <br />
-            <label>
-                Filtrar por empresa:
-                <input type="text" name="companyName" onChange={handleFilterChange} />
-            </label>
-            <br />
-            <label>
-                Filtrar por tipo de cliente:
-                <select name="customerType" onChange={handleFilterChange}>
-                    <option value="">Todos</option>
-                    <option value="rent">Rent A Car</option>
-                    <option value="private">Particular</option>
-                </select>
-            </label>
-            <br />
-            <ul style={{ listStyleType: 'none', padding: 0 }}>
-                {filteredVehicles.map((vehicle, index) => (
-                    <li
-                        key={index}
-                        style={{
-                            marginBottom: '8px',
-                            backgroundColor: vehicle.washer ? 'lightgreen' : 'grey',
-                            padding: '8px',
-                            borderRadius: '4px',
-                        }}
-                    >
-                        {index + 1}. {vehicle.date} - {vehicle.companyName} - {vehicle.licensePlate} - {vehicle.vehicleType} - {vehicle.customerName}
-                        <select
-                            value={vehicle.washer || ''}
-                            onChange={(e) => handleAssignWasher(index, e.target.value)}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Patente</th>
+                        <th>Tipo de Vehículo</th>
+                        <th>Nombre del Cliente</th>
+                        <th>Teléfono</th>
+                        <th>Empresa</th>
+                        <th>Lavador</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {filteredVehicles.map((vehicle, index) => (
+                        <tr
+                            key={index}
+                            className={vehicle.washer ? 'assigned' : ''}
                         >
-                            <option value="">Lavado por...</option>
-                            {washers.map(washer => (
-                                <option key={washer} value={washer}>{washer}</option>
-                            ))}
-                        </select>
-                    </li>
-                ))}
-            </ul>
+                            <td>{vehicle.date}</td>
+                            <td>{vehicle.licensePlate}</td>
+                            <td>{vehicle.vehicleType}</td>
+                            <td>{vehicle.customerName}</td>
+                            <td>{vehicle.phoneNumber}</td>
+                            <td>{vehicle.companyName}</td>
+                            <td>
+                                <select
+                                    value={vehicle.washer || ''}
+                                    onChange={(e) => handleAssignWasher(index, e.target.value)}
+                                >
+                                    <option value="">Seleccione un lavador</option>
+                                    {washers.map((washer, i) => (
+                                        <option key={i} value={washer}>{washer}</option>
+                                    ))}
+                                </select>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     );
-};
+}
 
 export default VehicleList;

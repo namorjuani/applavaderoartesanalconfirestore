@@ -13,21 +13,6 @@ interface Vehicle {
     amount: number;
 }
 
-const vehiclePrices = {
-    rental: {
-        auto: 6200,
-        suv: 7300,
-        "4x4": 9600,
-        combi: 12000
-    },
-    private: {
-        auto: 11000,
-        suv: 14000,
-        "4x4": 17000,
-        combi: 22000
-    }
-};
-
 const VehicleForm: React.FC = () => {
     const [customerType, setCustomerType] = useState('');
     const [companyName, setCompanyName] = useState('');
@@ -37,6 +22,11 @@ const VehicleForm: React.FC = () => {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [amount, setAmount] = useState(0);
     const [vehicles, setVehicles] = useState<Vehicle[]>(JSON.parse(localStorage.getItem('vehicles') || '[]'));
+
+    // Obtiene los precios actualizados del localStorage
+    const getPrices = () => JSON.parse(localStorage.getItem('washPrices') || '{}');
+
+    const vehiclePrices = getPrices();
 
     const handleCustomerTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const type = event.target.value;
@@ -99,6 +89,9 @@ const VehicleForm: React.FC = () => {
         const updatedVehicles = [...vehicles, newVehicle];
         setVehicles(updatedVehicles);
         localStorage.setItem('vehicles', JSON.stringify(updatedVehicles));
+
+        // Disparar evento para actualización de la lista
+        window.dispatchEvent(new Event('storage'));
 
         // Reset fields
         setCustomerType('');
@@ -163,10 +156,7 @@ const VehicleForm: React.FC = () => {
                         <br />
                     </>
                 )}
-                <label>
-                    Monto:
-                    <input type="number" value={amount} readOnly />
-                </label>
+
                 <br />
                 <button type="submit">Registrar Vehículo</button>
             </form>

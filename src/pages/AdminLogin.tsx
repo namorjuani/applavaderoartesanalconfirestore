@@ -9,7 +9,7 @@ const AdminLogin: React.FC = () => {
 
     const handleLogin = (event: React.FormEvent) => {
         event.preventDefault();
-        if (username === 'admin' && password === 'admin123') {
+        if (username === 'f2' && password === 'parking') {
             localStorage.setItem('adminLoggedIn', 'true');
             navigate('/admin-dashboard');
         } else {
