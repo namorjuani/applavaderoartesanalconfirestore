@@ -8,7 +8,7 @@ import Navigation from "./components/Navigation";
 import CompanyRecords from "./pages/CompanyRecords";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, getDocs, addDoc } from "firebase/firestore"; // Importa getDocs
 import { db } from './firebaseConfig';
 
 const App: React.FC = () => {
@@ -16,7 +16,16 @@ const App: React.FC = () => {
     const vehicles = JSON.parse(localStorage.getItem('vehicles') || '[]');
     const vehiclesCollection = collection(db, 'vehicles');
 
-    for (const vehicle of vehicles) {
+    // Verifica si hay vehículos existentes en Firebase
+    const existingVehiclesSnapshot = await getDocs(vehiclesCollection);
+    const existingVehicles = existingVehiclesSnapshot.docs.map(doc => doc.data());
+
+    // Filtra los vehículos que ya existen en Firebase
+    const newVehicles = vehicles.filter(vehicle =>
+      !existingVehicles.some(existing => existing.id === vehicle.id) // Asegúrate de tener una propiedad 'id' única
+    );
+
+    for (const vehicle of newVehicles) {
       try {
         await addDoc(vehiclesCollection, vehicle);
         console.log("Vehículo agregado:", vehicle);
@@ -24,8 +33,10 @@ const App: React.FC = () => {
         console.error("Error al agregar vehículo:", e);
       }
     }
-  };
 
+    // Limpiar localStorage si es necesario
+    localStorage.removeItem('vehicles'); // O puedes vaciarlo si prefieres
+  };
 
   useEffect(() => {
     migrateDataToFirebase();
