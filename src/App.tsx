@@ -13,7 +13,7 @@ import { db } from './firebaseConfig';
 
 const App: React.FC = () => {
   const migrateDataToFirebase = async () => {
-    const vehicles = JSON.parse(localStorage.getItem('vehicles')) || [];
+    const vehicles = JSON.parse(localStorage.getItem('vehicles') || '[]');
     const vehiclesCollection = collection(db, 'vehicles');
 
     for (const vehicle of vehicles) {
@@ -25,6 +25,7 @@ const App: React.FC = () => {
       }
     }
   };
+
 
   useEffect(() => {
     migrateDataToFirebase();
