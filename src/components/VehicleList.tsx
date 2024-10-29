@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import './VehicleList.css'; // Asegúrate de que este archivo existe y se usa en tu proyecto
+import { db } from '../firebaseConfig'; // Ajusta la ruta según la ubicación de tu archivo
+
+// Ahora puedes usar `db` para interactuar con Firestore, por ejemplo:
+import { collection, getDocs } from "firebase/firestore";
+
+async function fetchData() {
+    const querySnapshot = await getDocs(collection(db, "nombreDeTuColeccion"));
+    querySnapshot.forEach((doc) => {
+        console.log(`${doc.id} => ${doc.data()}`);
+    });
+}
 
 const getTodayDate = () => {
     const today = new Date();

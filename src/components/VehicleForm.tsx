@@ -1,5 +1,18 @@
+// VehicleForm.tsx
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
+import { db } from '../firebaseConfig'; // Ajusta la ruta según la ubicación de tu archivo
+
+// Ahora puedes usar `db` para interactuar con Firestore, por ejemplo:
+import { collection, getDocs } from "firebase/firestore";
+
+async function fetchData() {
+    const querySnapshot = await getDocs(collection(db, "nombreDeTuColeccion"));
+    querySnapshot.forEach((doc) => {
+        console.log(`${doc.id} => ${doc.data()}`);
+    });
+}
+
 
 interface Vehicle {
     customerType: string;
@@ -23,44 +36,61 @@ const VehicleForm: React.FC = () => {
     const [amount, setAmount] = useState(0);
     const [vehicles, setVehicles] = useState<Vehicle[]>(JSON.parse(localStorage.getItem('vehicles') || '[]'));
 
-    // Obtiene los precios actualizados del localStorage
-    const getPrices = () => JSON.parse(localStorage.getItem('washPrices') || '{}');
-
+    // Función para obtener los precios desde el localStorage
+    const getPrices = () => {
+        const prices = JSON.parse(localStorage.getItem('washPrices') || '{}');
+        console.log('Prices:', prices); // Log para verificar los precios
+        return prices;
+    };
     const vehiclePrices = getPrices();
 
+    // Función para formatear el key como "fourByFourRentacar"
+    const formatKey = (type: string, customerType: string) => {
+        let vehicleKey = '';
+        switch (type) {
+            case '4x4':
+                vehicleKey = 'fourByFour';
+                break;
+            case 'auto':
+                vehicleKey = 'auto';
+                break;
+            case 'suv':
+                vehicleKey = 'suv';
+                break;
+            case 'combi':
+                vehicleKey = 'combi';
+                break;
+            default:
+                vehicleKey = type;
+        }
+        const formattedKey = `${vehicleKey}${customerType === 'rental' ? 'Rentacar' : 'Particular'}`;
+        console.log('Formatted Key:', formattedKey); // Log para verificar el key
+        return formattedKey;
+    };
+
+    // Actualiza el tipo de cliente y, si ya se seleccionó un tipo de vehículo, actualiza el monto
     const handleCustomerTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const type = event.target.value;
         setCustomerType(type);
-        // Resetea el monto al cambiar el tipo de cliente
         if (vehicleType) {
-            setAmount(vehiclePrices[type]?.[vehicleType] || 0);
+            const priceKey = formatKey(vehicleType, type);
+            console.log('Price Key:', priceKey); // Ver qué clave se está generando
+            setAmount(vehiclePrices[priceKey] || 0);
+            console.log('Amount set to:', vehiclePrices[priceKey] || 0); // Ver el monto establecido
         }
-    }
+    };
 
-    const handleCompanyNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCompanyName(event.target.value);
-    }
-
-    const handleLicensePlateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setLicensePlate(event.target.value);
-    }
-
+    // Actualiza el tipo de vehículo y calcula el monto basado en el tipo de cliente
     const handleVehicleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const type = event.target.value;
         setVehicleType(type);
-        // Actualiza el monto basado en el tipo de vehículo y cliente
         if (customerType) {
-            setAmount(vehiclePrices[customerType]?.[type] || 0);
+            const priceKey = formatKey(type, customerType);
+            console.log('Price Key:', priceKey); // Ver qué clave se está generando
+            setAmount(vehiclePrices[priceKey] || 0);
+            console.log('Amount set to:', vehiclePrices[priceKey] || 0); // Ver el monto establecido
         }
-    }
-
-    const handleCustomerNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCustomerName(event.target.value);
-    }
-
-    const handlePhoneNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setPhoneNumber(event.target.value);
-    }
+    };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -82,31 +112,41 @@ const VehicleForm: React.FC = () => {
             customerName,
             phoneNumber,
             date,
-            washer: '', // Lavador no asignado en el formulario
+            washer: '',
             amount,
         };
 
-        const updatedVehicles = [...vehicles, newVehicle];
-        setVehicles(updatedVehicles);
-        localStorage.setItem('vehicles', JSON.stringify(updatedVehicles));
+        try {
+            const updatedVehicles = [...vehicles, newVehicle];
+            setVehicles(updatedVehicles);
+            localStorage.setItem('vehicles', JSON.stringify(updatedVehicles));
 
-        // Disparar evento para actualización de la lista
-        window.dispatchEvent(new Event('storage'));
+            // Disparar evento para actualización de la lista
+            window.dispatchEvent(new Event('storage'));
 
-        // Reset fields
-        setCustomerType('');
-        setCompanyName('');
-        setLicensePlate('');
-        setVehicleType('');
-        setCustomerName('');
-        setPhoneNumber('');
-        setAmount(0);
+            // Resetear campos
+            setCustomerType('');
+            setCompanyName('');
+            setLicensePlate('');
+            setVehicleType('');
+            setCustomerName('');
+            setPhoneNumber('');
+            setAmount(0);
 
-        Swal.fire({
-            icon: 'success',
-            title: 'Vehículo registrado exitosamente',
-        });
-    }
+            Swal.fire({
+                icon: 'success',
+                title: 'Vehículo registrado exitosamente',
+            });
+        } catch (error) {
+            console.error("Error al guardar el vehículo:", error); // Esto imprimirá el error en la consola
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudo registrar el vehículo. Por favor intente de nuevo.',
+            });
+        }
+    };
+
 
     return (
         <div className="VehicleForm">
@@ -123,12 +163,12 @@ const VehicleForm: React.FC = () => {
                 <br />
                 <label>
                     Empresa:
-                    <input type="text" value={companyName} onChange={handleCompanyNameChange} />
+                    <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} />
                 </label>
                 <br />
                 <label>
                     Patente:
-                    <input type="text" value={licensePlate} onChange={handleLicensePlateChange} />
+                    <input type="text" value={licensePlate} onChange={(e) => setLicensePlate(e.target.value)} />
                 </label>
                 <br />
                 <label>
@@ -144,24 +184,23 @@ const VehicleForm: React.FC = () => {
                 <br />
                 <label>
                     Nombre del Cliente:
-                    <input type="text" value={customerName} onChange={handleCustomerNameChange} />
+                    <input type="text" value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
                 </label>
                 <br />
                 {customerType === 'private' && (
                     <>
                         <label>
                             Teléfono del Cliente:
-                            <input type="tel" value={phoneNumber} onChange={handlePhoneNumberChange} />
+                            <input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
                         </label>
                         <br />
                     </>
                 )}
-
                 <br />
                 <button type="submit">Registrar Vehículo</button>
             </form>
         </div>
     );
-}
+};
 
 export default VehicleForm;

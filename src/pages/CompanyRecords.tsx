@@ -1,4 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { db } from '../firebaseConfig'; // Ajusta la ruta según la ubicación de tu archivo
+
+// Ahora puedes usar `db` para interactuar con Firestore, por ejemplo:
+import { collection, getDocs } from "firebase/firestore";
+
+async function fetchData() {
+    const querySnapshot = await getDocs(collection(db, "nombreDeTuColeccion"));
+    querySnapshot.forEach((doc) => {
+        console.log(`${doc.id} => ${doc.data()}`);
+    });
+}
 
 const CompanyRecords: React.FC = () => {
     const [vehicles, setVehicles] = useState<any[]>([]);
@@ -8,7 +19,7 @@ const CompanyRecords: React.FC = () => {
     const [prices, setPrices] = useState<{ [key: string]: number }>({
         autoRentacar: 5500,
         suvRentacar: 6500,
-        fourByFourRentacar: 8500,
+        fourByFour: 8500,
         combiRentacar: 10000,
         autoParticular: 5500,
         suvParticular: 6500,

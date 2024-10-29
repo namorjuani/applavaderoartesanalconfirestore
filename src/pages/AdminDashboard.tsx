@@ -2,6 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import './AdminDashboard.css'
+import { db } from '../firebaseConfig'; // Ajusta la ruta según la ubicación de tu archivo
+
+// Ahora puedes usar `db` para interactuar con Firestore, por ejemplo:
+import { collection, getDocs } from "firebase/firestore";
+
+async function fetchData() {
+    const querySnapshot = await getDocs(collection(db, "nombreDeTuColeccion"));
+    querySnapshot.forEach((doc) => {
+        console.log(`${doc.id} => ${doc.data()}`);
+    });
+}
 
 const AdminDashboard: React.FC = () => {
 
@@ -11,7 +22,7 @@ const AdminDashboard: React.FC = () => {
     const [prices, setPrices] = useState<{ [key: string]: number }>({
         autoRentacar: 5500,
         suvRentacar: 6500,
-        fourByFourRentacar: 8500,
+        fourByFour: 8500,
         combiRentacar: 10000,
         autoParticular: 5500,
         suvParticular: 6500,
@@ -21,7 +32,7 @@ const AdminDashboard: React.FC = () => {
     const [washerPrices, setWasherPrices] = useState<{ [key: string]: number }>({
         autoRentacar: 500,
         suvRentacar: 600,
-        fourByFourRentacar: 800,
+        fourByFour: 800,
         combiRentacar: 1000,
         autoParticular: 500,
         suvParticular: 600,
